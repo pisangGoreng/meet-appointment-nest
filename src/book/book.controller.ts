@@ -4,22 +4,31 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Query,
+  Param,
 } from '@nestjs/common';
+import * as moment from 'moment';
+
 import { BookService } from './book.service';
 
 @Controller('books')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
-  @Get()
+  @Get(':subject')
   @HttpCode(HttpStatus.OK)
-  async getAll(@Query('page') page = 1): Promise<any> {
-    // const [users, usersErr] = await this.userService.findAll();
-    // console.log('SEBETULYNA MASUK ENGK C????? ', users);
-    // if (usersErr) throw new BadRequestException(usersErr);
-    // return users;
+  async getAll(@Param('subject') subject: string = 'love'): Promise<any> {
+    const books = await this.bookService.getBooksBySubject(subject);
+    if (books.works.length === 0) {
+      throw new BadRequestException('Unknow subject');
+    }
 
-    return this.bookService.getBooksBySubject('love');
+    const transformBooks = await this.bookService.modifyBooks(books.works);
+    const dateTimeNow = moment().format('YYYY-MM-DD').toString();
+
+    return {
+      date_now: dateTimeNow,
+      subject,
+      books: transformBooks,
+    };
   }
 }
