@@ -31,6 +31,7 @@ console.log('Connection ', {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  autoLoadEntities: ['dev', 'dev-local'].includes(process.env.NODE_ENV),
 });
 console.log(`Server use ${process.env.NODE_ENV} env`);
 console.log(`Server is running on PORT ==> ${process.env.APP_PORT}`);

@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
+import { BookRepository } from './book.repository';
+import { In } from 'typeorm';
 
 @Injectable()
 export class BookService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly bookRepository: BookRepository,
+  ) {}
 
   async getBooksBySubject(subject: string): Promise<any> {
     const { data } = await firstValueFrom(
@@ -38,5 +43,23 @@ export class BookService {
     });
 
     return modifiedBooks;
+  }
+
+  async all({ booksDetails }) {
+    console.log(
+      '🚀 ~ file: book.service.ts ~ line 48 ~ BookService ~ all ~ bookDetails',
+      booksDetails,
+    );
+
+    const where = {
+      title: In(booksDetails.map((book) => book.title)),
+    };
+
+    return this.bookRepository.all([], where);
+  }
+
+  bulkCreate({ booksDetails }) {
+    // return this.bookRepository.bulkCreate({ booksDetails });
+    return this.bookRepository.create(booksDetails[0]);
   }
 }
