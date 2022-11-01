@@ -8,7 +8,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import * as moment from 'moment';
+import { AppointmentBooksDetailsService } from 'src/appointment-books-details/appointment-books-details.service';
 import { BookService } from 'src/book/book.service';
 import { UserService } from 'src/user/user.service';
 import { AppointmentService } from './appointment.service';
@@ -20,6 +20,7 @@ export class AppointmentController {
     private readonly appointmentService: AppointmentService,
     private readonly userService: UserService,
     private readonly bookService: BookService,
+    private readonly appointmentBooksDetails: AppointmentBooksDetailsService,
   ) {}
 
   @Get()
@@ -33,9 +34,9 @@ export class AppointmentController {
   async create(@Body() body: CreateAppointmentDto): Promise<any> {
     const { name, phone_number, appointment_date, books_title } = body;
 
+    // ! HANDLE USER
     const userDetails = { name, phone_number };
     let storedUserDetails = null;
-
     const [user, userErr] = await this.userService.findUser({ userDetails });
     if (userErr) throw new BadRequestException(userErr);
     storedUserDetails = user;
@@ -49,11 +50,13 @@ export class AppointmentController {
       storedUserDetails = newUser;
     }
 
+    // ! HANDLE BOOK
     const [saveBooks, saveBooksErr] = await this.bookService.bulkCreate({
       booksDetails: books_title,
     });
     if (saveBooksErr) throw new BadRequestException(saveBooksErr);
 
+    // ! HANDLE APPOINTMENT
     const [appointment, appointmentErr] = await this.appointmentService.create({
       appointmentDetails: {
         user_id: storedUserDetails.id,
@@ -62,12 +65,12 @@ export class AppointmentController {
     });
     if (appointmentErr) throw new BadRequestException(appointmentErr);
 
-    return { appointment, storedUserDetails, saveBooks };
+    // ! HANDLE APPOINTMENT BOOK DETAILS
+    const [appointmentBookDetails, appointmentBookDetailsErr] =
+      await this.appointmentBooksDetails.bulkCreate(appointment, saveBooks);
+    if (appointmentBookDetailsErr)
+      throw new BadRequestException(appointmentBookDetailsErr);
+
+    return { appointmentBookDetails };
   }
 }
-
-// const [books, bookErr] = await this.bookService.all({
-//   booksDetails: books_title,
-// });
-// if (bookErr) throw new BadRequestException(bookErr);
-// const storedBooks = await this.bookService.

@@ -37,7 +37,7 @@ export class Appointment {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  // @ManyToMany(() => Book)
+  // @ManyToMany(() => Book, { eager: true, cascade: true })
   // @JoinTable({
   //   name: 'appointment_books_details',
   //   joinColumn: { name: 'appointment_id', referencedColumnName: 'id' },

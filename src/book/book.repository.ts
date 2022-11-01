@@ -23,7 +23,7 @@ export class BookRepository extends AbstractRepository {
         .createQueryBuilder('book')
         .insert()
         .into(Book)
-        .values(booksDetails[0])
+        .values(booksDetails)
         .execute();
     } catch (error) {
       console.error(error);

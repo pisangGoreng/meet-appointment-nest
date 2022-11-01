@@ -6,6 +6,7 @@ import { BookModule } from './book/book.module';
 import { CommonModule } from './common/common.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { UserModule } from './user/user.module';
+import { AppointmentBooksDetailsModule } from './appointment-books-details/appointment-books-details.module';
 
 const isEnable = ['dev', 'dev-local'].includes(process.env.NODE_ENV);
 @Module({
@@ -19,12 +20,13 @@ const isEnable = ['dev', 'dev-local'].includes(process.env.NODE_ENV);
       database: process.env.DB_NAME,
       autoLoadEntities: isEnable,
       synchronize: true,
-      logging: true,
+      // logging: true,
     }),
     BookModule,
     CommonModule,
     AppointmentModule,
     UserModule,
+    AppointmentBooksDetailsModule,
   ],
   controllers: [],
   providers: [],

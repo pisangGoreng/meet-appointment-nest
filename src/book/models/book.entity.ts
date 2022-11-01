@@ -27,18 +27,6 @@ export class Book {
   @CreateDateColumn()
   created_at: Date;
 
-  @Exclude()
   @UpdateDateColumn()
   updated_at: Date;
-
-  // @ManyToMany(() => Subject, (subject) => subject.teachers)
-  // subjects: Subject[];
-
-  // @ManyToMany(() => Appointment)
-  // @JoinTable({
-  //   name: 'appointment_books_details',
-  //   joinColumn: { name: 'book_id', referencedColumnName: 'id' },
-  //   inverseJoinColumn: { name: 'appointment_id', referencedColumnName: 'id' },
-  // })
-  // appointments: Appointment[];
 }

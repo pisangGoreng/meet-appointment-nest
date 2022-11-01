@@ -59,7 +59,6 @@ export class BookService {
   }
 
   bulkCreate({ booksDetails }) {
-    // return this.bookRepository.bulkCreate({ booksDetails });
-    return this.bookRepository.create(booksDetails[0]);
+    return this.bookRepository.bulkCreate({ booksDetails });
   }
 }
